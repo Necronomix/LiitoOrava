@@ -22,13 +22,24 @@ public class MovementScript : MonoBehaviour {
 //	private float lastCheck;
 	private float passedTime;
 	[SerializeField] private Vector3 realGravity = new Vector3 (0f, -9.807f, 0f);
-	[SerializeField] private float baseFlightAngleX = 20f;
-	private float movementSpeed= 25f;
-	private float rotationSpeed = 10f;
-	private float strafeSpeed = 10f;
+	[SerializeField] private float baseFlightAngleX = 25f;
+	[SerializeField] private float movementSpeed= 25f;
+	[SerializeField] private float rotationSpeed = 20f;
+	[SerializeField] private float strafeSpeed = 10f;
+	[SerializeField] private float maxFlightPower = 400f;
+	[SerializeField] private float flightSpeedMultiplier = 2f;
 	private float flightPower = 0f;
 	private float flightPowerMulti;
+
 	private bool flightHasDied = false;
+
+	private float ScaledFlightForce
+	{
+		get
+		{
+			return flightPower * 0.01f;
+		}
+	}
 
 	public float GetAxis(string axisName)
 	{
@@ -48,7 +59,7 @@ public class MovementScript : MonoBehaviour {
 
 	bool IsOnFlight()
 	{
-		return true;
+		return !Physics.Raycast(transform.position, Vector3.down, flightHeight);
 	}
 
 
@@ -81,8 +92,15 @@ public class MovementScript : MonoBehaviour {
 	void StartFlight ()
 	{
 		flightPower = 100f;
-		rigidbody.AddForce (Vector3.down * 0.1f);
+		rigidbody.useGravity = false;
+		//rigidbody.AddForce (Vector3.down * 0.1f);
 	}
+
+	void EndFlight()
+		{
+			rigidbody.useGravity = true;
+		flightHasDied = true;
+		}
 
 	public static Vector3 NormalizeRotationZ (Vector3 rotation)
 	{
@@ -106,6 +124,8 @@ public class MovementScript : MonoBehaviour {
 
 	}
 
+
+
 	// Update is called once per frame
 	void Update () {
 
@@ -124,30 +144,30 @@ public class MovementScript : MonoBehaviour {
 			rigidbody.MovePosition(transform.position + transform.forward * Time.deltaTime * upAndDown);
 		}
 		else {
-			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 3 , 0, -mov * rotationSpeed) * timeChange;
+			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , 0, -mov * rotationSpeed) * timeChange;
 			Vector3 oldRot = transform.rotation.eulerAngles;
 			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > 30 && (oldRot.z < 0 == newRot.z < 0))
 				newRot = new Vector3(newRot.x, newRot.y, 0);
 			transform.Rotate( newRot) ;
-			rigidbody.AddRelativeForce(0, 0, 2 * (flightPower / 100f), ForceMode.Force);
+			rigidbody.AddRelativeForce(0, 0, flightSpeedMultiplier * ScaledFlightForce, ForceMode.Force);
 			rigidbody.AddForce(CalculateFligthStrafe(newRot), 0, 0);
 
 			float distance = Mathf.Abs(transform.rotation.x - baseFlightAngleX);
 			float x = rigidbody.rotation.eulerAngles.x;
 			if(x > baseFlightAngleX && x < 180)
 			{
-				flightPower += distance * distance * distance * 0.005f  * timeChange;
+				flightPower = Mathf.Max(maxFlightPower, (flightPower + distance * distance * distance * 0.005f  * timeChange));
 			}
 			else 
 			{
 				flightPower -= distance * distance * distance * 0.005f  * timeChange;
 			}
 			if(flightPower <= 0)
-				flightHasDied = true;
+				EndFlight();
 			//rigidbody.rotation.z += mov;
 		}
-		SetGravity ();
+		//SetGravity ();
 
 	
 	}
