@@ -152,7 +152,7 @@ public class MovementScript : MonoBehaviour {
 			rigidbody.MovePosition(transform.position + transform.forward * Time.deltaTime * upAndDown);
 		}
 		else {
-			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , ScaleMultiplierForAngle(NormalizeRotationZ(transform.rotation.eulerAngles)) * turnSpeed, -mov * rotationSpeed) * timeChange;
+			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , NormalizeRotationZ(transform.rotation.eulerAngles).z / maximumAngle * turnSpeed, -mov * rotationSpeed) * timeChange;
 			Vector3 oldRot = transform.rotation.eulerAngles;
 			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > maximumAngle && (oldRot.z < 0 == newRot.z < 0))
@@ -162,11 +162,11 @@ public class MovementScript : MonoBehaviour {
 			float strafe = CalculateFligthStrafe(newRot);
 			rigidbody.AddForce(strafe, 0, 0);
 			float flightSpeed = flightSpeedMultiplier * ScaledFlightForce;
-			float scaler = ScaleMultiplierForAngle(NormalizeRotationZ(transform.rotation.eulerAngles));
-			if(scaler > 0.1f)
-			{
-				flightSpeed /= (3 * scaler);
-			}
+			//float scaler = ScaleMultiplierForAngle(NormalizeRotationZ(transform.rotation.eulerAngles));
+			//if(scaler > 0.1f)
+			//{
+			//	flightSpeed /= (3 * scaler);
+			//}
 			rigidbody.AddRelativeForce(0, 0, flightSpeed, ForceMode.Force);
 
 			float distance = Mathf.Abs(transform.rotation.x - baseFlightAngleX);
