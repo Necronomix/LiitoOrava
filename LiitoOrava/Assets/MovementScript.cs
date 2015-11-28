@@ -126,7 +126,7 @@ public class MovementScript : MonoBehaviour {
 
 	}
 
-	static float ScaleMultiplierForAngle (Vector3 rotation)
+	float ScaleMultiplierForAngle (Vector3 rotation)
 	{
 		return Mathf.Abs ((rotation.z))  / maximumAngle;
 	}
