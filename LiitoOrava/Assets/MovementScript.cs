@@ -21,13 +21,11 @@ public class MovementScript : MonoBehaviour {
 	[SerializeField] private float flightHeight = 1.5f;
 //	private float lastCheck;
 	private float passedTime;
-	[SerializeField] private Vector3 realGravity = new Vector3 (0f, -9.807f, 0f);
 	[SerializeField] private float baseFlightAngleX = 25f;
 	[SerializeField] private float movementSpeed= 25f;
 	[SerializeField] private float rotationSpeed = 20f;
 	[SerializeField] private float strafeSpeed = 20f;
 	[SerializeField] private float maxFlightPower = 400f;
-	[SerializeField] private float flightSpeedMultiplier = 2f;
 	[SerializeField] private float maximumAngle = 30f;
 	[SerializeField] private float turnSpeed = 20f;
 	private float flightPower = 0f;
@@ -69,18 +67,9 @@ public class MovementScript : MonoBehaviour {
 	void OnGUI() {
 		GUI.Label(new Rect(10, 10, 100, 20), ""+OnFlight);
 		GUI.Label(new Rect(10, 40, 100, 20), "FlightPower"+flightPower);
-		GUI.Label(new Rect(10, 70, 100, 20), "Velocity "+rigidbody.velocity);
+		GUI.Label(new Rect(10, 70, 500, 30), "Velocity " +rigidbody.velocity);
 	}
 
-	void SetGravity ()
-	{
-		if (OnFlight) {
-
-			Physics.gravity = new Vector3 (0, 0, 0);
-
-		} else
-			Physics.gravity = realGravity;
-	}	
 
 	void HandleFlight ()
 	{
@@ -121,7 +110,7 @@ public class MovementScript : MonoBehaviour {
 		//	//rotation.z - 180
 		//	return 1;
 		//}
-		float direction = rotation.z > 0 ? 1 : -1;
+		float direction = rotation.z < 0 ? 1 : -1;
 
 		return strafeSpeed * ScaledFlightForce * ScaleMultiplierForAngle (rotation) * direction;
 
@@ -159,16 +148,19 @@ public class MovementScript : MonoBehaviour {
 				newRot = new Vector3(newRot.x, newRot.y, 0);
 			transform.Rotate( newRot) ;
 
-			float strafe = CalculateFligthStrafe(newRot);
-			rigidbody.AddForce(strafe, 0, 0);
-			float flightSpeed = flightSpeedMultiplier * ScaledFlightForce;
+			float strafe = CalculateFligthStrafe(oldRot);
+			//rigidbody.AddForce(0, 0, strafe);
+			//rigidbody.MovePosition(transform.position +  );
+			float flightSpeed = ScaledFlightForce * movementSpeed;
 			//float scaler = ScaleMultiplierForAngle(NormalizeRotationZ(transform.rotation.eulerAngles));
 			//if(scaler > 0.1f)
 			//{
 			//	flightSpeed /= (3 * scaler);
 			//}
 			//We will push forward the fllier
-			rigidbody.AddRelativeForce(0, 0, flightSpeed, ForceMode.Force);
+			//rigidbody.AddRelativeForce(0, 0, flightSpeed, ForceMode.Force);
+			rigidbody.MovePosition(transform.position + new Vector3(0,0, strafe) * Time.deltaTime + transform.forward * Time.deltaTime * flightSpeed);
+
 
 			//This is for calculating flight force
 			float distance = Mathf.Abs(transform.rotation.x - baseFlightAngleX);

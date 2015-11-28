@@ -200,9 +200,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -256,11 +254,10 @@ MonoBehaviour:
   flightHeight: 1.5
   realGravity: {x: 0, y: -9.80700016, z: 0}
   baseFlightAngleX: 20
-  movementSpeed: 25
+  movementSpeed: 20
   rotationSpeed: 20
-  strafeSpeed: 1010
+  strafeSpeed: 20
   maxFlightPower: 400
-  flightSpeedMultiplier: 2
   maximumAngle: 30
   turnSpeed: 20
 --- !u!1 &990830964
@@ -511,9 +508,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
