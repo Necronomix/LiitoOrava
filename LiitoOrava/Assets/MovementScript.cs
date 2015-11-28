@@ -28,6 +28,7 @@ public class MovementScript : MonoBehaviour {
 	[SerializeField] private float strafeSpeed = 10f;
 	[SerializeField] private float maxFlightPower = 400f;
 	[SerializeField] private float flightSpeedMultiplier = 2f;
+	[SerializeField] private float maximumAngle = 30f;
 	private float flightPower = 0f;
 	private float flightPowerMulti;
 
@@ -67,6 +68,7 @@ public class MovementScript : MonoBehaviour {
 	void OnGUI() {
 		GUI.Label(new Rect(10, 10, 100, 20), ""+OnFlight);
 		GUI.Label(new Rect(10, 40, 100, 20), "FlightPower"+flightPower);
+		GUI.Label(new Rect(10, 70, 100, 20), "Velocity "+rigidbody.velocity);
 	}
 
 	void SetGravity ()
@@ -120,8 +122,13 @@ public class MovementScript : MonoBehaviour {
 		//}
 		float direction = rotation.z < 0 ? 1 : -1;
 
-		return strafeSpeed * ScaledFlightForce * Mathf.Abs((rotation.z)) / 30f;
+		return strafeSpeed * ScaledFlightForce * ScaleMultiplierForAngle (rotation) * direction;
 
+	}
+
+	static float ScaleMultiplierForAngle (Vector3 rotation)
+	{
+		return Mathf.Abs ((rotation.z))  / maximumAngle;
 	}
 
 
@@ -147,11 +154,19 @@ public class MovementScript : MonoBehaviour {
 			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , 0, -mov * rotationSpeed) * timeChange;
 			Vector3 oldRot = transform.rotation.eulerAngles;
 			oldRot = NormalizeRotationZ(oldRot);
-			if(Mathf.Abs(oldRot.z) > 30 && (oldRot.z < 0 == newRot.z < 0))
+			if(Mathf.Abs(oldRot.z) > maximumAngle && (oldRot.z < 0 == newRot.z < 0))
 				newRot = new Vector3(newRot.x, newRot.y, 0);
 			transform.Rotate( newRot) ;
-			rigidbody.AddRelativeForce(0, 0, flightSpeedMultiplier * ScaledFlightForce, ForceMode.Force);
-			rigidbody.AddForce(CalculateFligthStrafe(newRot), 0, 0);
+
+			float strafe = CalculateFligthStrafe(newRot);
+			rigidbody.AddForce(strafe, 0, 0);
+			float flightSpeed = flightSpeedMultiplier * ScaledFlightForce;
+			float scaler = ScaleMultiplierForAngle(transform.rotation.eulerAngles);
+			if(scaler > 0.1f)
+			{
+				flightSpeed /= (3 * scaler);
+			}
+			rigidbody.AddRelativeForce(0, 0, flightSpeed, ForceMode.Force);
 
 			float distance = Mathf.Abs(transform.rotation.x - baseFlightAngleX);
 			float x = rigidbody.rotation.eulerAngles.x;
