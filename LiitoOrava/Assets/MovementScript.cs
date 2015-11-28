@@ -131,7 +131,7 @@ public class MovementScript : MonoBehaviour {
 
 		float timeChange = Time.deltaTime;
 		passedTime += timeChange;
-		if (passedTime > raycastFrequency) {
+		if (passedTime > raycastFrequency && !onFlight) {
 			passedTime -= raycastFrequency;
 			HandleFlight ();
 		}
