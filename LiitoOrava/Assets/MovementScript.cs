@@ -120,7 +120,7 @@ public class MovementScript : MonoBehaviour {
 		//}
 		float direction = rotation.z < 0 ? 1 : -1;
 
-		return strafeSpeed * Mathf.Abs((rotation.z)) / 30f;
+		return strafeSpeed * ScaledFlightForce * Mathf.Abs((rotation.z)) / 30f;
 
 	}
 
