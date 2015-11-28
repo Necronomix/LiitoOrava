@@ -147,7 +147,7 @@ public class MovementScript : MonoBehaviour {
 			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > maximumAngle && (oldRot.z < 0 == newRot.z < 0))
 				newRot = new Vector3(newRot.x, newRot.y, 0);
-			if((oldRot + newRot).x >= 90)
+			if((oldRot + newRot).x >= 89)
 				newRot = new Vector3(0, newRot.y, newRot.z);
 
 			transform.Rotate( newRot) ;
