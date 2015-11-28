@@ -152,7 +152,7 @@ public class MovementScript : MonoBehaviour {
 			rigidbody.MovePosition(transform.position + transform.forward * Time.deltaTime * upAndDown);
 		}
 		else {
-			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , NormalizeRotationZ(ScaleMultiplierForAngle(transform.rotation.eulerAngles)) * turnSpeed, -mov * rotationSpeed) * timeChange;
+			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , ScaleMultiplierForAngle(NormalizeRotationZ(transform.rotation.eulerAngles)) * turnSpeed, -mov * rotationSpeed) * timeChange;
 			Vector3 oldRot = transform.rotation.eulerAngles;
 			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > maximumAngle && (oldRot.z < 0 == newRot.z < 0))
