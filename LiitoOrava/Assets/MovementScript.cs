@@ -48,7 +48,7 @@ public class MovementScript : MonoBehaviour {
 
 	bool IsOnFlight()
 	{
-		return !Physics.Raycast (transform.position, Vector3.down, flightHeight);
+		return true;
 	}
 
 
@@ -84,7 +84,7 @@ public class MovementScript : MonoBehaviour {
 		rigidbody.AddForce (Vector3.down * 0.1f);
 	}
 
-	public static Vector3 NormalizeRotation (Vector3 rotation)
+	public static Vector3 NormalizeRotationZ (Vector3 rotation)
 	{
 		if (rotation.z > 180) {
 			rotation = rotation - new Vector3 (0, 0, 360);
@@ -94,7 +94,7 @@ public class MovementScript : MonoBehaviour {
 
 	float CalculateFligthStrafe(Vector3 rotation)
 	{
-		rotation = NormalizeRotation (rotation);
+		rotation = NormalizeRotationZ (rotation);
 		
 		//if(rotation.z > 180) {
 		//	//rotation.z - 180
@@ -126,22 +126,22 @@ public class MovementScript : MonoBehaviour {
 		else {
 			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 3 , 0, -mov * rotationSpeed) * timeChange;
 			Vector3 oldRot = transform.rotation.eulerAngles;
-			oldRot = NormalizeRotation(oldRot);
+			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > 30 && (oldRot.z < 0 == newRot.z < 0))
 				newRot = new Vector3(newRot.x, newRot.y, 0);
-			rigidbody.rotation = Quaternion.Euler(rigidbody.rotation.eulerAngles + newRot) ;
-			rigidbody.AddRelativeForce(0, 0, 1 * (flightPower / 100f), ForceMode.Force);
+			transform.Rotate( newRot) ;
+			rigidbody.AddRelativeForce(0, 0, 2 * (flightPower / 100f), ForceMode.Force);
 			rigidbody.AddForce(CalculateFligthStrafe(newRot), 0, 0);
 
 			float distance = Mathf.Abs(transform.rotation.x - baseFlightAngleX);
 			float x = rigidbody.rotation.eulerAngles.x;
 			if(x > baseFlightAngleX && x < 180)
 			{
-				flightPower += distance * distance * distance * 0.001f  * timeChange;
+				flightPower += distance * distance * distance * 0.005f  * timeChange;
 			}
 			else 
 			{
-				flightPower -= distance * distance * distance * 0.001f  * timeChange;
+				flightPower -= distance * distance * distance * 0.005f  * timeChange;
 			}
 			if(flightPower <= 0)
 				flightHasDied = true;
