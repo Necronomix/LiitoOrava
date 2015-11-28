@@ -162,7 +162,7 @@ public class MovementScript : MonoBehaviour {
 			float strafe = CalculateFligthStrafe(newRot);
 			rigidbody.AddForce(strafe, 0, 0);
 			float flightSpeed = flightSpeedMultiplier * ScaledFlightForce;
-			float scaler = ScaleMultiplierForAngle(transform.rotation.eulerAngles);
+			float scaler = ScaleMultiplierForAngle(NormalizeRotationZ(transform.rotation.eulerAngles));
 			if(scaler > 0.1f)
 			{
 				flightSpeed /= (3 * scaler);
