@@ -25,7 +25,7 @@ public class MovementScript : MonoBehaviour {
 	[SerializeField] private float baseFlightAngleX = 25f;
 	[SerializeField] private float movementSpeed= 25f;
 	[SerializeField] private float rotationSpeed = 20f;
-	[SerializeField] private float strafeSpeed = 10f;
+	[SerializeField] private float strafeSpeed = 20f;
 	[SerializeField] private float maxFlightPower = 400f;
 	[SerializeField] private float flightSpeedMultiplier = 2f;
 	[SerializeField] private float maximumAngle = 30f;
@@ -152,7 +152,7 @@ public class MovementScript : MonoBehaviour {
 			rigidbody.MovePosition(transform.position + transform.forward * Time.deltaTime * upAndDown);
 		}
 		else {
-			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , NormalizeRotationZ(transform.rotation.eulerAngles).z / maximumAngle * turnSpeed, -mov * rotationSpeed) * timeChange;
+			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , 0, -mov * rotationSpeed) * timeChange;
 			Vector3 oldRot = transform.rotation.eulerAngles;
 			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > maximumAngle && (oldRot.z < 0 == newRot.z < 0))
@@ -167,8 +167,10 @@ public class MovementScript : MonoBehaviour {
 			//{
 			//	flightSpeed /= (3 * scaler);
 			//}
+			//We will push forward the fllier
 			rigidbody.AddRelativeForce(0, 0, flightSpeed, ForceMode.Force);
 
+			//This is for calculating flight force
 			float distance = Mathf.Abs(transform.rotation.x - baseFlightAngleX);
 			float x = rigidbody.rotation.eulerAngles.x;
 			if(x > baseFlightAngleX && x < 180)
