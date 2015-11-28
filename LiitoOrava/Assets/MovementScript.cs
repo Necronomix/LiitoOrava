@@ -63,12 +63,13 @@ public class MovementScript : MonoBehaviour {
 	}
 
 
-
+#if DEBUG
 	void OnGUI() {
 		GUI.Label(new Rect(10, 10, 100, 20), ""+OnFlight);
 		GUI.Label(new Rect(10, 40, 100, 20), "FlightPower"+flightPower);
-		GUI.Label(new Rect(10, 70, 500, 30), "Velocity " +rigidbody.velocity);
+		GUI.Label(new Rect(10, 70, 500, 30), "FlightAngle " + transform.rotation.eulerAngles);
 	}
+#endif
 
 
 	void HandleFlight ()
@@ -124,9 +125,9 @@ public class MovementScript : MonoBehaviour {
 
 
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
-		float timeChange = Time.deltaTime;
+		float timeChange = Time.fixedDeltaTime;
 		passedTime += timeChange;
 		if (passedTime > raycastFrequency && !onFlight) {
 			passedTime -= raycastFrequency;
@@ -146,7 +147,12 @@ public class MovementScript : MonoBehaviour {
 			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > maximumAngle && (oldRot.z < 0 == newRot.z < 0))
 				newRot = new Vector3(newRot.x, newRot.y, 0);
+			if((oldRot + newRot).x >= 90)
+				newRot = new Vector3(0, newRot.y, newRot.z);
+
 			transform.Rotate( newRot) ;
+
+			//transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(oldRot + newRot), turnSpeed * time);
 
 			float strafe = CalculateFligthStrafe(oldRot);
 			//rigidbody.AddForce(0, 0, strafe);
