@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
+	[SerializeField] private MovementScript movementScript;
+	[SerializeField] private Image flightGauge;
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -15,5 +15,7 @@ public class GameController : MonoBehaviour {
 		} else if (Input.GetKey (KeyCode.Escape)) {
 			Application.Quit();
 		}
+		flightGauge.fillAmount = movementScript.FlightPower / movementScript.MaxFlightPower;
+
 	}
 }

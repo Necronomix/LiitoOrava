@@ -29,6 +29,20 @@ public class MovementScript : MonoBehaviour {
 	[SerializeField] private float maximumAngle = 30f;
 	[SerializeField] private float turnSpeed = 20f;
 	private float flightPower = 0f;
+	float strafe;
+
+	public float MaxFlightPower {
+		get {
+			return maxFlightPower;
+		}
+	}
+
+	public float FlightPower {
+		get {
+			return flightPower;
+		}
+	}
+
 	private float flightPowerMulti;
 
 	private bool flightHasDied = false;
@@ -66,8 +80,9 @@ public class MovementScript : MonoBehaviour {
 #if DEBUG
 	void OnGUI() {
 		GUI.Label(new Rect(10, 10, 100, 20), ""+OnFlight);
-		GUI.Label(new Rect(10, 40, 100, 20), "FlightPower"+flightPower);
+
 		GUI.Label(new Rect(10, 70, 500, 30), "FlightAngle " + transform.rotation.eulerAngles);
+		GUI.Label(new Rect(10, 100, 500, 20), "FlightPower"+flightPower + " Strafe: "+strafe);
 	}
 #endif
 
@@ -119,7 +134,7 @@ public class MovementScript : MonoBehaviour {
 
 	float ScaleMultiplierForAngle (Vector3 rotation)
 	{
-		return Mathf.Abs ((rotation.z))  / maximumAngle;
+		return Mathf.Min(1, Mathf.Abs ((rotation.z))  / maximumAngle);
 	}
 
 
@@ -147,14 +162,14 @@ public class MovementScript : MonoBehaviour {
 			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > maximumAngle && (oldRot.z < 0 == newRot.z < 0))
 				newRot = new Vector3(newRot.x, newRot.y, 0);
-			if((oldRot + newRot).x >= 89)
+			if((oldRot + newRot).x >= 89 || (oldRot + newRot).x <= 0)
 				newRot = new Vector3(0, newRot.y, newRot.z);
 
-			transform.Rotate( newRot) ;
+			transform.Rotate( newRot);
 
 			//transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(oldRot + newRot), turnSpeed * time);
 
-			float strafe = CalculateFligthStrafe(oldRot);
+			strafe = CalculateFligthStrafe(oldRot);
 			//rigidbody.AddForce(0, 0, strafe);
 			//rigidbody.MovePosition(transform.position +  );
 			float flightSpeed = ScaledFlightForce * movementSpeed;
