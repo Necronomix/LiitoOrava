@@ -29,6 +29,7 @@ public class MovementScript : MonoBehaviour {
 	[SerializeField] private float maxFlightPower = 400f;
 	[SerializeField] private float flightSpeedMultiplier = 2f;
 	[SerializeField] private float maximumAngle = 30f;
+	[SerializeField] private float turnSpeed = 20f;
 	private float flightPower = 0f;
 	private float flightPowerMulti;
 
@@ -120,7 +121,7 @@ public class MovementScript : MonoBehaviour {
 		//	//rotation.z - 180
 		//	return 1;
 		//}
-		float direction = rotation.z < 0 ? 1 : -1;
+		float direction = rotation.z > 0 ? 1 : -1;
 
 		return strafeSpeed * ScaledFlightForce * ScaleMultiplierForAngle (rotation) * direction;
 
@@ -151,7 +152,7 @@ public class MovementScript : MonoBehaviour {
 			rigidbody.MovePosition(transform.position + transform.forward * Time.deltaTime * upAndDown);
 		}
 		else {
-			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , 0, -mov * rotationSpeed) * timeChange;
+			Vector3 newRot = new Vector3( upAndDown * rotationSpeed * 2 , NormalizeRotationZ(ScaleMultiplierForAngle(transform.rotation.eulerAngles)) * turnSpeed, -mov * rotationSpeed) * timeChange;
 			Vector3 oldRot = transform.rotation.eulerAngles;
 			oldRot = NormalizeRotationZ(oldRot);
 			if(Mathf.Abs(oldRot.z) > maximumAngle && (oldRot.z < 0 == newRot.z < 0))
