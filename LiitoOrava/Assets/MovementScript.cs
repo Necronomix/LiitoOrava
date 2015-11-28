@@ -157,7 +157,7 @@ public class MovementScript : MonoBehaviour {
 			float x = rigidbody.rotation.eulerAngles.x;
 			if(x > baseFlightAngleX && x < 180)
 			{
-				flightPower = Mathf.Max(maxFlightPower, (flightPower + distance * distance * distance * 0.005f  * timeChange));
+				flightPower = Mathf.Min(maxFlightPower, (flightPower + distance * distance * distance * 0.005f  * timeChange));
 			}
 			else 
 			{
