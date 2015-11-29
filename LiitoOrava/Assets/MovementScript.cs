@@ -111,10 +111,11 @@ public class MovementScript : MonoBehaviour {
 	}
 
 	void EndFlight()
-		{
-			rigidbody.useGravity = true;
+	{
+		rigidbody.useGravity = true;
+		flightPower = 0f; 
 		flightHasDied = true;
-		}
+	}
 
 	public static Vector3 NormalizeRotationZ (Vector3 rotation)
 	{
@@ -170,6 +171,14 @@ public class MovementScript : MonoBehaviour {
 		}
 		#endif
 	}
+
+
+	void OnCollisionEnter(Collision col)
+	{
+		if (col.collider.CompareTag ("Respawn")) return;
+		EndFlight ();
+	}
+
 
 	void RotateBy (float angles, Vector3 axis, float f)
 	{
@@ -231,6 +240,7 @@ public class MovementScript : MonoBehaviour {
 			//targetZ = targetZ * transform.rotation;
 			//ToOnGui("angleZ:",targetZ.ToString());
 			//transform.rotation = Quaternion.Slerp(transform.rotation, targetZ, Mathf.Abs(mov) * timeChange * rotationSpeed);
+			//ToOnGui("z", rigidbody.rotation.eulerAngles.z.ToString());
 
 			RotateBy (-mov * rotationSpeed, transform.forward, Mathf.Abs(mov) * timeChange);
 			RotateBy (turnSpeed * upAndDown, transform.right, Mathf.Abs (upAndDown) * timeChange); 
