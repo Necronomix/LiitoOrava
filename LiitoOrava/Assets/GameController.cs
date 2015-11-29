@@ -6,6 +6,8 @@ public class GameController : MonoBehaviour {
 
 	[SerializeField] private MovementScript movementScript;
 	[SerializeField] private Image flightGauge;
+    [SerializeField]
+    private ParticleSystem snowFlakes;
 
 	
 	// Update is called once per frame
@@ -15,7 +17,10 @@ public class GameController : MonoBehaviour {
 		} else if (Input.GetKey (KeyCode.Escape)) {
 			Application.Quit();
 		}
-		flightGauge.fillAmount = movementScript.FlightPower / movementScript.MaxFlightPower;
+        float relative = movementScript.FlightPower / movementScript.MaxFlightPower;
+        flightGauge.fillAmount = relative;
+        if(relative > 0)
+         snowFlakes.startSpeed = relative * 40f;
 
 	}
 }
