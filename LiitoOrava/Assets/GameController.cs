@@ -8,6 +8,14 @@ public class GameController : MonoBehaviour {
 	[SerializeField] private Image flightGauge;
     [SerializeField]
     private ParticleSystem snowFlakes;
+    [SerializeField]
+    private AudioSource tuulenTuiverrus;
+
+    void Start()
+    {
+        tuulenTuiverrus.Play();
+
+    }
 
 	
 	// Update is called once per frame
@@ -19,8 +27,9 @@ public class GameController : MonoBehaviour {
 		}
         float relative = movementScript.FlightPower / movementScript.MaxFlightPower;
         flightGauge.fillAmount = relative;
-        if(relative > 0)
+        relative = Mathf.Max(relative, 0.1f);
+       // if(relative > 0)
          snowFlakes.startSpeed = relative * 40f;
-
+        tuulenTuiverrus.volume = relative * 0.5f;
 	}
 }
